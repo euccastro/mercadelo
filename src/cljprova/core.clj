@@ -13,16 +13,19 @@
    "clara" {:id "clara" :owes 10 :has {}}
    "lois" {:id "lois" :owes 20 :has {"joam" 5 "maria" 60}}})
 
-;; in:
-;;    debtors: mapping from creditor to debtors, quantities
-;;    path: vector of strings representing the possible path so far
-;;    amount: minimum debt amount in the loop
+;; input:
+;;    accounts: mapping of accounts, same format as in the examples
+;;              above, but excluding entries with keys in `path'.
+;;    path: non-empty vector of ids for the users in the debt chain.
+;;    amount: maximum amount that is owed along all of the path
+;;            above (that is, the minimum of the amounts owed along
+;;            the path).
 ;; return:
 ;;    sequence of paths, where each path has the form
 ;;    {:amount amount :path ['joam' 'clara' 'lois']}
 (defn loops
-  ([accounts path amount]
-   (let [beginning (first path)]
+  [accounts path amount]
+  (let [beginning (first path)]
     (mapcat (fn [[debtor amt]]
               (let [min-amount (if amount
                                  (min amt amount)
@@ -33,8 +36,6 @@
                          (conj path debtor)
                          min-amount))))
             (:has (accounts (peek path))))))
-  ([accounts start]
-   (loops accounts [start] nil)))
 
 (defn ids-match-keys? [accounts]
   (every? (fn [[k v]]
@@ -73,13 +74,15 @@
   (and
    (account-sanity-check? accounts-no-loops)
    (account-sanity-check? accounts-with-loops)
-   (not (seq (loops accounts-no-loops "joam")))
-   (= (loops accounts-with-loops "joam")
+   (not (seq (loops accounts-no-loops ["joam" "maria"] 10)))
+   (= (loops accounts-with-loops ["joam" "maria"] 10)
       [{:amount 5 :path ["joam" "maria" "lois"]}])))
 
 (defn -main
-  "I don't do a whole lot ... yet."
+  "Quick test"
   [& args]
-  (println "Hello, World!"))
+  (println "Sanity checks" (if (sanity-check?)
+                             "pass."
+                             "fail.")))
 
-(sanity-check?)
+(-main)
