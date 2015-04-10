@@ -1,17 +1,94 @@
 (ns cljprova.core
   (:gen-class))
 
-(def accounts-no-loops
-  {"joam" {:id "joam" :owes 0 :has {"maria" 10}}
-   "maria" {:id "maria" :owes 10 :has {"clara" 5 "lois" 20}}
-   "clara" {:id "clara" :owes 10 :has {}}
-   "lois" {:id "lois" :owes 20 :has {"clara" 5}}})
+(def simple-accounts-no-loops
+  {"joam" {:id "joam"
+           :owes 0
+           :has {"maria" 10}
+           :accepts {}
+           :accepted-by {}}
+   "maria" {:id "maria"
+            :owes 10
+            :has {"clara" 5 "lois" 20}
+            :accepts {}
+            :accepted-by {}}
+   "clara" {:id "clara"
+            :owes 10
+            :has {}
+            :accepts {}
+            :accepted-by {}}
+   "lois" {:id "lois"
+           :owes 20
+           :has {"clara" 5}
+           :accepts {} :accepted-by {}}})
 
-(def accounts-with-loops
-  {"joam" {:id "joam" :owes 5 :has {"maria" 10 "clara" 5}}
-   "maria" {:id "maria" :owes 70 :has {"clara" 5 "lois" 20}}
-   "clara" {:id "clara" :owes 10 :has {}}
-   "lois" {:id "lois" :owes 20 :has {"joam" 5 "maria" 60}}})
+(def simple-accounts-with-loops
+  {"joam" {:id "joam"
+           :owes 5
+           :has {"maria" 10 "clara" 5}
+           :accepts {}
+           :accepted-by {}}
+   "maria" {:id "maria"
+            :owes 70
+            :has {"clara" 5 "lois" 20}
+            :accepts {}
+            :accepted-by {}}
+   "clara" {:id "clara"
+            :owes 10
+            :has {}
+            :accepts {}
+            :accepted-by {}}
+   "lois" {:id "lois"
+           :owes 20
+           :has {"joam" 5 "maria" 60}
+           :accepts {}
+           :accepted-by {}}})
+
+
+(defn can-take [accounts giver taker currency]
+  "The maximum amount of currency taker will take from giver."
+  (let [giver-map (accounts giver)
+        taker-map (accounts taker)]
+    ((if (= giver currency)
+       identity
+       (partial min (get giver-map currency 0)))
+     (max 0 (- (get (:accepts taker-map) currency 0)
+               (get (:has taker-map) currency 0))))))
+
+(defn find-direct-payment [accounts giver taker amount]
+  "Vector of payments, or nil if none found.
+
+   Payments in currencies other than taker's own will be preferred.
+   Other than that, if several possible currency choices are valid,
+   an arbitrary combination is chosen."
+  (let [giver-map (accounts giver)
+        taker-map (accounts taker)]
+    (loop [amount-left amount
+           [currency & rest-currencies] (conj (shuffle (keys (:has giver-map)))
+                                              giver)
+           payments []]
+      (let [curr-amt (can-take accounts giver taker currency)]
+        (if (>= curr-amt amount-left)
+          (conj payments {:giver giver
+                          :taker taker
+                          :currency currency
+                          :amount amount-left})
+          (recur (- amount-left curr-amt)
+                 rest-currencies
+                 (conj payments {:giver giver
+                                 :taker taker
+                                 :currency currency
+                                 :amount curr-amt})))))))
+
+(defn find-indirect-payment [accounts giver taker amount]
+  ; TODO
+  nil)
+
+; POC
+(defn find-payment [accounts giver taker amount]
+  (if-let [direct-payment (find-direct-payment accounts giver taker amount)]
+    direct-payment
+    (find-indirect-payment accounts giver taker amount)))
 
 ;; input:
 ;;    accounts: mapping of accounts, same format as in the examples
@@ -81,8 +158,8 @@
 (defn -main
   "Quick test"
   [& args]
-  (println "Sanity checks" (if (sanity-check?)
-                             "pass."
-                             "fail.")))
+  (str "Sanity checks " (if (sanity-check?)
+                          "pass."
+                          "fail.")))
 
 (-main)
