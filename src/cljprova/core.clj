@@ -1,7 +1,7 @@
 (ns cljprova.core
   (:gen-class))
 
-(def simple-accounts-no-loops
+(def simple-ledger-no-loops
   {"joam" {:id "joam"
            :owes {}
            :has {"maria" 10}
@@ -22,7 +22,7 @@
            :has {"clara" 5}
            :accepts {} :accepted-by {}}})
 
-(def simple-accounts-with-loops
+(def simple-ledger-with-loops
   {"joam" {:id "joam"
            :owes {"lois" 5}
            :has {"maria" 10 "clara" 5}
@@ -44,7 +44,7 @@
            :accepts {}
            :accepted-by {}}})
 
-(def direct-payment-accounts
+(def direct-payment-ledger
   {"joam" {:id "joam"
            :owes {}
            :has {"maria" 10}
@@ -69,16 +69,16 @@
 
 (defn can-take
   "The maximum amount of currency taker will take from giver."
-  [accounts giver taker currency maximum]
+  [ledger giver taker currency maximum]
   (min
    maximum
    ((if (= giver currency)
       identity
-      (partial min (get-in accounts [giver :has currency] 0)))
+      (partial min (get-in ledger [giver :has currency] 0)))
     (if (= taker currency)
       maximum
-      (max 0 (- (get-in accounts [taker :accepts currency] 0)
-                (get-in accounts [taker :has currency] 0)))))))
+      (max 0 (- (get-in ledger [taker :accepts currency] 0)
+                (get-in ledger [taker :has currency] 0)))))))
 
 (defn find-direct-payment
   "Vector of payments, or nil if none found.
@@ -87,14 +87,14 @@
   Payments in currencies other than giver's will be preferred.
   Other than that, if several possible currency choices are valid,
   an arbitrary combination is chosen."
-  [accounts giver taker amount]
+  [ledger giver taker amount]
   (loop [amount-left amount
          [currency & rest-currencies]
          (cons taker
-               (conj (shuffle (keys (get-in accounts [giver :has])))
+               (conj (shuffle (keys (get-in ledger [giver :has])))
                      giver))
          payments []]
-    (let [currency-amount (can-take accounts giver taker currency amount-left)]
+    (let [currency-amount (can-take ledger giver taker currency amount-left)]
       (if (= currency-amount amount-left)
         (conj payments {:giver giver
                         :taker taker
@@ -107,18 +107,18 @@
                                :currency currency
                                :amount currency-amount}))))))
 
-(defn find-indirect-payment [accounts giver taker amount]
+(defn find-indirect-payment [ledger giver taker amount]
   ; TODO
   nil)
 
 ; POC
-(defn find-payment [accounts giver taker amount]
-  (if-let [direct-payment (find-direct-payment accounts giver taker amount)]
+(defn find-payment [ledger giver taker amount]
+  (if-let [direct-payment (find-direct-payment ledger giver taker amount)]
     direct-payment
-    (find-indirect-payment accounts giver taker amount)))
+    (find-indirect-payment ledger giver taker amount)))
 
 ;; input:
-;;    accounts: mapping of accounts, same format as in the examples
+;;    ledger: mapping of accounts, same format as in the examples
 ;;              above, but excluding entries with keys in `path'.
 ;;    path: non-empty vector of ids for the users in the debt chain.
 ;;    amount: maximum amount that is owed along all of the path
@@ -128,7 +128,7 @@
 ;;    sequence of paths, where each path has the form
 ;;    {:amount amount :path ['joam' 'clara' 'lois']}
 (defn loops
-  [accounts path amount]
+  [ledger path amount]
   (let [beginning (first path)]
     (mapcat (fn [[debtor amt]]
               (let [min-amount (if amount
@@ -136,63 +136,63 @@
                                  amt)]
                 (if (= debtor beginning)
                   [{:amount min-amount :path path}]
-                  (loops (dissoc accounts (peek path))
+                  (loops (dissoc ledger (peek path))
                          (conj path debtor)
                          min-amount))))
-            (:has (accounts (peek path))))))
+            (:has (ledger (peek path))))))
 
-(defn ids-match-keys? [accounts]
+(defn ids-match-keys? [ledger]
   (every? (fn [[k v]]
             (= k (:id v)))
-        accounts))
+        ledger))
 
-(defn all-keys-exist? [accounts]
-  (every? accounts
+(defn all-keys-exist? [ledger]
+  (every? ledger
           (mapcat keys
                   (mapcat (juxt :owes :has :accepts :accepted-by)
-                          (vals accounts)))))
+                          (vals ledger)))))
 
-(defn all-subvals-positive? [accounts]
+(defn all-subvals-positive? [ledger]
   (every? #(and (number? %) (> % 0))
           (mapcat vals
                   (mapcat (juxt :owes :has :accepts :accepted-by)
-                          (vals accounts)))))
+                          (vals ledger)))))
 
-(defn no-self-debts? [accounts]
+(defn no-self-debts? [ledger]
   (not (some #(get (:has %) (:id %))
-             (vals accounts))))
+             (vals ledger))))
 
-(defn no-owes-has-intersection? [accounts]
+(defn no-owes-has-intersection? [ledger]
   (not (some #(some (:owes %) (keys (:has %)))
-             (vals accounts))))
+             (vals ledger))))
 
-(defn complementary-maps? [accounts key1 key2]
+(defn complementary-maps? [ledger key1 key2]
   (every?
    (fn [[id acc]]
      (every?
       (fn [[other-id amount]]
-        (= amount (get-in accounts [other-id key2 id])))
+        (= amount (get-in ledger [other-id key2 id])))
       (key1 acc)))
-   accounts))
+   ledger))
 
-(defn account-sanity-check? [accounts]
+(defn account-sanity-check? [ledger]
   (and
-   (ids-match-keys? accounts)
-   (all-keys-exist? accounts)
-   (all-subvals-positive? accounts)
-   (no-self-debts? accounts)
-   (no-owes-has-intersection? accounts)
-   (complementary-maps? accounts :has :owes)
-   (complementary-maps? accounts :accepts :accepted-by)))
+   (ids-match-keys? ledger)
+   (all-keys-exist? ledger)
+   (all-subvals-positive? ledger)
+   (no-self-debts? ledger)
+   (no-owes-has-intersection? ledger)
+   (complementary-maps? ledger :has :owes)
+   (complementary-maps? ledger :accepts :accepted-by)))
 
 (defn sanity-check? []
   (and
-   (account-sanity-check? simple-accounts-no-loops)
-   (account-sanity-check? simple-accounts-with-loops)
-   (not (seq (loops simple-accounts-no-loops ["joam" "maria"] 10)))
-   (= (loops simple-accounts-with-loops ["joam" "maria"] 10)
+   (account-sanity-check? simple-ledger-no-loops)
+   (account-sanity-check? simple-ledger-with-loops)
+   (not (seq (loops simple-ledger-no-loops ["joam" "maria"] 10)))
+   (= (loops simple-ledger-with-loops ["joam" "maria"] 10)
       [{:amount 3 :path ["joam" "maria" "clara" "lois"]}])
-   (= (find-payment direct-payment-accounts "joam" "maria" 5)
+   (= (find-payment direct-payment-ledger "joam" "maria" 5)
       [{:giver "joam", :taker "maria", :currency "maria", :amount 5}])))
 
 (defn -main
