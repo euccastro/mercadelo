@@ -29,18 +29,18 @@
            :accepts {}
            :accepted-by {}}
    "maria" {:id "maria"
-            :owes {"joam" 10 "lois" 60}
-            :has {"clara" 5 "lois" 20}
+            :owes {"joam" 10 "lois" 40}
+            :has {"clara" 5}
             :accepts {}
             :accepted-by {}}
    "clara" {:id "clara"
             :owes {"joam" 5 "maria" 5}
-            :has {}
+            :has {"lois" 3}
             :accepts {}
             :accepted-by {}}
    "lois" {:id "lois"
-           :owes {"maria" 20}
-           :has {"joam" 5 "maria" 60}
+           :owes {"clara" 3}
+           :has {"joam" 5 "maria" 40}
            :accepts {}
            :accepted-by {}}})
 
@@ -63,7 +63,8 @@
    "lois" {:id "lois"
            :owes {"maria" 20}
            :has {"clara" 5}
-           :accepts {} :accepted-by {}}})
+           :accepts {}
+           :accepted-by {}}})
 
 
 (defn can-take
@@ -152,13 +153,17 @@
                           (vals accounts)))))
 
 (defn all-subvals-positive? [accounts]
-  (every? #(and (number? %) (>= % 0))
+  (every? #(and (number? %) (> % 0))
           (mapcat vals
                   (mapcat (juxt :owes :has :accepts :accepted-by)
                           (vals accounts)))))
 
 (defn no-self-debts? [accounts]
   (not (some #(get (:has %) (:id %))
+             (vals accounts))))
+
+(defn no-owes-has-intersection? [accounts]
+  (not (some #(some (:owes %) (keys (:has %)))
              (vals accounts))))
 
 (defn complementary-maps? [accounts key1 key2]
@@ -176,6 +181,7 @@
    (all-keys-exist? accounts)
    (all-subvals-positive? accounts)
    (no-self-debts? accounts)
+   (no-owes-has-intersection? accounts)
    (complementary-maps? accounts :has :owes)
    (complementary-maps? accounts :accepts :accepted-by)))
 
@@ -185,7 +191,7 @@
    (account-sanity-check? simple-accounts-with-loops)
    (not (seq (loops simple-accounts-no-loops ["joam" "maria"] 10)))
    (= (loops simple-accounts-with-loops ["joam" "maria"] 10)
-      [{:amount 5 :path ["joam" "maria" "lois"]}])
+      [{:amount 3 :path ["joam" "maria" "clara" "lois"]}])
    (= (find-payment direct-payment-accounts "joam" "maria" 5)
       [{:giver "joam", :taker "maria", :currency "maria", :amount 5}])))
 
