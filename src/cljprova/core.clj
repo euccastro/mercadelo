@@ -89,10 +89,12 @@
   an arbitrary combination is chosen."
   [ledger giver taker amount]
   (loop [amount-left amount
-         [currency & rest-currencies]
-         (cons taker
-               (conj (shuffle (keys (get-in ledger [giver :has])))
-                     giver))
+         [currency
+          & rest-currencies] (cons taker
+                                   (conj (shuffle
+                                          (keys
+                                           (get-in ledger [giver :has])))
+                                         giver))
          payments []]
     (let [currency-amount (can-take ledger giver taker currency amount-left)]
       (if (= currency-amount amount-left)
@@ -107,9 +109,96 @@
                                :currency currency
                                :amount currency-amount}))))))
 
-(defn find-indirect-payment [ledger giver taker amount]
-  ; TODO
-  nil)
+(defn expand [ledger giver]
+  "-> ((taker currency amount) ...)"
+  (concat (map
+           (fn [[taker amount]]
+             [taker taker amount])
+           (get-in ledger [giver :has]))
+          (map
+           (fn [[taker amount]]
+             [taker giver amount])
+           (get-in ledger [giver :accepted-by]))))
+
+;; acumular pagamentos é ũa loucura.  Melhor repetir o pagamento até atingir o
+;; amount-left ou até nom poder mais.
+;; fazer funçom find-one-payment (-> amount, route), execute-one-payment -> ledger
+(defn find-indirect-payments
+  [ledger giver taker amount]
+  (loop [ledger ledger
+         amount amount
+         payments []]
+    (if (= amount 0)
+      {:payments payments :ledger ledger}
+      (let [result (find-one-payment ledger giver taker)]
+        (if (nil? result)
+          {:payments payments :ledger ledger}
+          (let [payment-amount (min amount (:amount result))]
+            (recur
+             (execute-payment-route (:route result) payment-amount)
+             (- amount payment-amount)
+             (conj payments (assoc result :amount payment-amount)))))))))
+
+
+(defn find-indirect-payment
+  ;; iterative deepening search for a collection of (possibly transitive) payments
+  ;; that will have the net result of taking up to amount from giver to taker
+  ;; each part will only get paid in their own currency or in a currency they accept.
+  ([ledger giver taker amount]
+   (first
+    (filter #(not (= % :cutoff))
+            (map #(find-indirect-payment ledger giver taker amount amount [] %)
+                 (iterate inc 1)))))
+  ([ledger ; the ledger as in this state of the search
+    giver ; the (possibly intermediate giver) considered at this point of the search
+    taker ; the ultimate receiver of the payment
+    max-amount ; maximum amount that can be delivered through this path of the search
+    amount-left ; amount left for which to find a payment
+    payments ; all partial payment routes discovered so far
+    limit ; how far deep to search from here
+    ]
+   (cond (= giver taker)
+         [{:amount amount :payments payments :ledger ledger}]
+         (= limit 0) :cutoff
+         :else
+         ; iterate over all immediate possible takers of this giver
+         (loop [ledger ledger
+                rest (expand ledger giver)
+                amount-left amount-left
+                payments payments
+                any-cutoff false]
+           (if (nil? (seq rest))
+             payments
+             (let [[[next-giver currency step-max-amount] & rest] rest
+                   result (find-indirect-payment
+                           ledger
+                           next-giver
+                           taker
+                           (min amount-left step-max-amount)
+                           amount-left
+                           (conj payments {:currency currency :giver giver})
+                           (- limit 1))]
+               (cond (= result :cutoff) (recur ledger
+                                               rest
+                                               amount-left
+                                               payments
+                                               true)
+                     (nil? result) (recur ledger
+                                          rest
+                                          amount-left
+                                          payments
+                                          any-cutoff)
+                     :else
+                     (let [amount-paid (reduce + (map :amount result))
+                           payments (concat payments result)]
+                       (if (= amount-paid amount-left)
+                         payments
+                         (recur (:ledger (peek result))
+                                rest
+                                (- amount-left amount-paid)
+                                payments
+                                any-cutoff)))))))))))
+
 
 ; POC
 (defn find-payment [ledger giver taker amount]
