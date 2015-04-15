@@ -103,6 +103,7 @@
          [currency currency amount])
        has)
       ;; Then try and pay the currencies we have to whoever will take
+      ;; them, because that conserves outstanding currency/debt.
       (mapcat
        (fn [[currency giver-amt]]
          (filter
@@ -118,6 +119,9 @@
                                                       0))))])
                (get-in ledger [currency :accepted-by]))))
        has)
+      ;; If there's no other option, try and give the giver's currency
+      ;; to whoever will take it, even though that increases outstanding
+      ;; currency/debt.
       (map
        (fn [[taker amount]]
          [taker giver amount])
