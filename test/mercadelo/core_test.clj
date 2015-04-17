@@ -21,7 +21,8 @@
    "lois" {:id "lois"
            :owes {"maria" 20}
            :has {"clara" 5}
-           :accepts {} :accepted-by {}}})
+           :accepts {}
+           :accepted-by {}}})
 
 (def simple-ledger-with-loops
   {"joam" {:id "joam"
@@ -45,26 +46,26 @@
            :accepts {}
            :accepted-by {}}})
 
-(def direct-payment-ledger
+(def payment-ledger
   {"joam" {:id "joam"
            :owes {}
            :has {"maria" 10}
            :accepts {"maria" 5}
-           :accepted-by {}}
+           :accepted-by {"lois" 10}}
    "maria" {:id "maria"
             :owes {"joam" 10}
             :has {"clara" 5 "lois" 20}
-            :accepts {}
+            :accepts {"clara" 10}
             :accepted-by {"joam" 5}}
    "clara" {:id "clara"
             :owes {"lois" 5 "maria" 5}
             :has {}
             :accepts {}
-            :accepted-by {}}
+            :accepted-by {"maria" 10}}
    "lois" {:id "lois"
            :owes {"maria" 20}
            :has {"clara" 5}
-           :accepts {}
+           :accepts {"joam" 10}
            :accepted-by {}}})
 
 (def ledger-after-direct-payment
@@ -72,21 +73,43 @@
            :owes {}
            :has {"maria" 5}
            :accepts {"maria" 5}
-           :accepted-by {}}
+           :accepted-by {"lois" 10}}
    "maria" {:id "maria"
             :owes {"joam" 5}
             :has {"clara" 5 "lois" 20}
-            :accepts {}
+            :accepts {"clara" 10}
             :accepted-by {"joam" 5}}
    "clara" {:id "clara"
             :owes {"lois" 5 "maria" 5}
             :has {}
             :accepts {}
-            :accepted-by {}}
+            :accepted-by {"maria" 10}}
    "lois" {:id "lois"
            :owes {"maria" 20}
            :has {"clara" 5}
-           :accepts {}
+           :accepts {"joam" 10}
+           :accepted-by {}}})
+
+(def ledger-after-two-payments
+  {"joam" {:id "joam"
+           :owes {"lois" 5}
+           :has {}
+           :accepts {"maria" 5}
+           :accepted-by {"lois" 10}}
+   "maria" {:id "maria"
+            :owes {}
+            :has {"clara" 10 "lois" 20}
+            :accepts {"clara" 10}
+            :accepted-by {"joam" 5}}
+   "clara" {:id "clara"
+            :owes {"lois" 5 "maria" 5}
+            :has {}
+            :accepts {}
+            :accepted-by {"maria" 10}}
+   "lois" {:id "lois"
+           :owes {"maria" 20}
+           :has {"joam" 5}
+           :accepts {"joam" 10}
            :accepted-by {}}})
 
 (deftest ledger-sanity-checks
@@ -96,7 +119,7 @@
     (is
      (every? ledger-valid? [simple-ledger-no-loops
                             simple-ledger-with-loops
-                            direct-payment-ledger
+                            payment-ledger
                             ledger-after-direct-payment]))))
 (deftest test-loops
   (testing "Loops"
@@ -108,8 +131,19 @@
 
 (deftest payments
   (testing "Payments"
-    (is (= (find-payments direct-payment-ledger "joam" "maria" 5)
+    (is (= (find-payments payment-ledger "maria" "joam" 5)
+           {:payments [] :ledger payment-ledger})
+        "No payment found")
+    (is (= (find-payments payment-ledger "joam" "maria" 5)
            {:payments [{:route [{:giver "joam", :taker "maria", :currency "maria"}],
                         :amount 5}],
             :ledger ledger-after-direct-payment})
-        "One payment expected")))
+        "One-step payment")
+    (is (= (find-payments payment-ledger "joam" "maria" 20)
+           {:payments [{:route [{:giver "joam", :taker "maria", :currency "maria"}]
+                        :amount 10}
+                       {:route [{:giver "joam", :taker "lois", :currency "joam"}
+                                {:giver "lois", :taker "maria", :currency "clara"}]
+                        :amount 5}]
+            :ledger ledger-after-two-payments})
+        "Two payments, one direct and other with 2 steps, one short-cutting")))

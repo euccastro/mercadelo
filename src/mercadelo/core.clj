@@ -1,6 +1,17 @@
 (ns mercadelo.core
   (:gen-class))
 
+(defn expand-accepted-by [ledger currency]
+  (filter
+   ;; Discard people that already have as much as they'll take
+   ;; of the currency offered.
+   #(> (% 2) 0)
+   (map (fn [[taker taker-amt]]
+          [taker currency (- taker-amt
+                             (get-in ledger
+                                     [taker :has currency]
+                                     0))])
+        (get-in ledger [currency :accepted-by]))))
 
 (defn expand [ledger giver]
   "-> ((taker currency amount) ...)"
@@ -20,26 +31,14 @@
       ;; them, because that conserves outstanding currency/debt.
       (mapcat
        (fn [[currency giver-amt]]
-         (filter
-          ;; Discard people that already have as much as they'll take
-          ;; of the currency we have to offer.
-          #(not (= (% 1) 0))
-          (map (fn [[taker taker-amt]]
-                 [taker currency (min giver-amt
-                                      (max 0
-                                           (- taker-amt
-                                              (get-in ledger
-                                                      [taker :has currency]
-                                                      0))))])
-               (get-in ledger [currency :accepted-by]))))
+         (map (fn [[taker currency taker-amt]]
+                [taker currency (min giver-amt taker-amt)])
+              (expand-accepted-by ledger currency)))
        has)
       ;; If there's no other option, try and give the giver's currency
       ;; to whoever will take it, even though that increases outstanding
       ;; currency/debt.
-      (map
-       (fn [[taker amount]]
-         [taker giver amount])
-       (get-in ledger [giver :accepted-by]))))))
+      (expand-accepted-by ledger giver)))))
 
 (defn find-one-payment
   "-> {:route [{:giver :taker :currency} ...]
