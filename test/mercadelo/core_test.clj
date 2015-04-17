@@ -102,7 +102,7 @@
             :accepts {"clara" 10}
             :accepted-by {"joam" 5}}
    "clara" {:id "clara"
-            :owes {"lois" 5 "maria" 5}
+            :owes {"maria" 10}
             :has {}
             :accepts {}
             :accepted-by {"maria" 10}}
@@ -120,7 +120,8 @@
      (every? ledger-valid? [simple-ledger-no-loops
                             simple-ledger-with-loops
                             payment-ledger
-                            ledger-after-direct-payment]))))
+                            ledger-after-direct-payment
+                            ledger-after-two-payments]))))
 (deftest test-loops
   (testing "Loops"
     (is (not (seq (loops simple-ledger-no-loops ["joam" "maria"] 10)))

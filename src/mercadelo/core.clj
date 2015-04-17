@@ -81,32 +81,47 @@
              any-cutoff :cutoff
              :else nil)))))
 
+(defn add-amt-in [m ks amt]
+  (update-in m ks #(+ (or % 0) amt)))
+
 (defn dissoc-in [m ks]
   (update-in m (pop ks) dissoc (peek ks)))
+
+(defn sub-amt-in [m ks amt]
+  (let [new-amt (- (get-in m ks) amt)]
+    (if (= new-amt 0)
+      ;; remove zero entries
+      (dissoc-in m ks)
+      (assoc-in m ks new-amt))))
+
+(defn mv-amt-in [m from-ks to-ks amt]
+  (add-amt-in (sub-amt-in m from-ks amt) to-ks amt))
 
 (defn execute-payment-route
   "-> ledger"
   [ledger route amount]
-  (letfn [(add-amt [ledger who ks]
-            (update-in (ledger who) ks #(+ (or % 0) amount)))
-          (sub-amt [ledger who ks]
-            (let [whomap (ledger who)
-                  new-amt (- (get-in whomap ks) amount)]
-              (if (= new-amt 0)
-                ;; remove zero entries
-                (dissoc-in whomap ks)
-                (assoc-in whomap ks new-amt))))]
-    (reduce
-     (fn [ledger {:keys [currency giver taker]}]
-       (assoc ledger
-              giver (if (= currency giver)
-                      (add-amt ledger giver [:owes taker])
-                      (sub-amt ledger giver [:has currency]))
-              taker (if (= currency taker)
-                      (sub-amt ledger taker [:owes giver])
-                      (add-amt ledger taker [:has currency]))))
-     ledger
-     route)))
+  (reduce
+   (fn [ledger {:keys [currency giver taker]}]
+     (let [changed {giver (if (= currency giver)
+                            (add-amt-in (ledger giver) [:owes taker] amount)
+                            (sub-amt-in (ledger giver) [:has currency] amount))
+                    taker (if (= currency taker)
+                            (sub-amt-in (ledger taker) [:owes giver] amount)
+                            (add-amt-in (ledger taker) [:has currency] amount))}]
+       (merge ledger
+              (if (or (= currency giver)
+                      (= currency taker))
+                changed
+                ;; If a third party's currency has changed hands, we must update
+                ;; who this party owes the involved amount.
+                (conj changed
+                      [currency (mv-amt-in
+                                 (ledger currency)
+                                 [:owes giver]
+                                 [:owes taker]
+                                 amount)])))))
+   ledger
+   route))
 
 (defn find-payments
   "-> {:payments [{:route [{:currency :giver :taker} ...]
