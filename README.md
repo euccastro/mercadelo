@@ -1,36 +1,13 @@
 # mercadelo
 
-FIXME: description
+Supporting software for a [mutual credit](http://en.wikipedia.org/wiki/Mutual_credit) [complementary currency](http://en.wikipedia.org/wiki/Complementary_currency), based on [LETS](http://en.wikipedia.org/wiki/Local_exchange_trading_system) but with a twist: each participant emits their own currency. 
 
-## Installation
+## Installation, Usage, etc.
 
-Download from http://example.com/FIXME.
-
-## Usage
-
-FIXME: explanation
-
-    $ java -jar mercadelo-0.1.0-standalone.jar [args]
-
-## Options
-
-FIXME: listing of options this app accepts.
-
-## Examples
-
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
+Not nearly there yet.  At this stage, this is mostly a playground for the concepts.  If you're interested, take a look at the [docs](https://github.com/euccastro/mercadelo/blob/master/doc/intro.md).  Tests and code are in flux and not too readable at this moment.
 
 ## License
 
-Copyright © 2015 FIXME
+Copyright © 2015 Estevo U. C. Castro
 
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+Distributed under the MIT license.
