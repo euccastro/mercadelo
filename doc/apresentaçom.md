@@ -10,11 +10,11 @@ Mais se todas tedes conta no mercadelo, o sistema pode-che facilitar encontrar a
 
 Clara pode gastar esse creto directamente na tua taberna, e nesse caso isto seria como um troco.  Mais Clara tamém pode usar esse creto para pagar-lhe a um mecânico que queira comer e beber na tua taberna, ou a um advogado que queira pagar-lhe a um fontaneiro que queira comprar-lhe ovos a alguém que queira comer e beber na tua taberna, etc.  Clara nom tém que gastar tempo e trabalho em encontrar essa cadea de necessidades e capacidades; para isso é que está o mercadelo.
 
-Para automatizar estas funçons, o mercadelo é mormente um sistema informatizado.  Será possível operar de forma mixta (por exemplo, imprimir bilhetes ou acunhar moedas para usar em feiras), pero para compreender o sistema é melhor explicar o funcionamento normal, que requere usar computador ou telemóvel (o qual tamém se pode usar em feiras).
+Para automatizar estas funçons, o mercadelo é mormente um sistema informatizado.  Será possível operar de forma mixta (por exemplo, imprimir bilhetes ou acunhar moedas para usar em feiras), pero para compreender o sistema é melhor explicar o funcionamento normal, que requere usar computador ou telemóvel (o qual, aliás, tamém se pode usar em feiras).
 
 ## Objectivos
 
-O objectivo máis imediato é dinamizar as economias locais, empoderar às participantes (tanto indivíduais quanto colectivas) para que desenvolvam as suas capacidades e satisfagam as suas necessidades, ponhendo ũas em contacto coas outras.
+O objectivo máis imediato é dinamizar as economias locais, empoderar às participantes (tanto individuais quanto colectivas) para que desenvolvam as suas capacidades e satisfagam as suas necessidades, ponhendo ũas em contacto coas outras.
 
 O objectivo último é que ninguém tenha que ter medo de algum dia nom ser capaz de satisfazer algũa necessidade básica.  Nom digo que o mercadelo poda garantir isto, apenas que a motivaçom fundamental do projecto é ajudar nisso.
 
@@ -34,7 +34,7 @@ Como unidade de medida, a moeda nom pode "faltar" máis do que faltem necessidad
 
 ### Resumo
 
-O mercadelo é um sistema monetário no que cada participante emite a sua própria moeda, sem límite, e decide quanta moeda quer aceitar de cada ũa das outras participantes.
+O mercadelo é um sistema monetário no que cada participante, que pode ser ũa pessoa ou coletivo, emite a sua própria moeda, sem límite, e decide quanta moeda quer aceitar de cada ũa das outras participantes.
 
 ### Unidade de valor
 
@@ -52,7 +52,7 @@ No dia seguinte Maria vai-lhe tomar ũas canhas à taberna do Fabiám, e despois
 
 Seria máis simples que todo o mundo tivesse a mesma moeda e portanto só um saldo, positivo ou negativo.  [Esse sistema existe](http://es.wikipedia.org/wiki/Sistema_de_cambio_local), mais infelizmente é fácil abusar del e portanto só funciona em comunidades pequenas onde hai moita confiança.  Isto poderia ser o caso do Foro Ecolóxico de Ribeira.  O mercadelo tenta ligar várias comunidades que talvez ainda nom se conheçam o suficiente para confiar ilimitadamente entre si.
 
-Um exemplo de abuso seria que o meu cunhado entra no sistema e me paga um milhom de elos.  El fica "arruinado" pero tanto lhe tém porque nom pensava participar de boa fe.  Em princípio, eu podo gastar o meu milhom de elos no que quiger.  Ainda se todas as contas som públicas, pode-se fazer o mesmo menos descaradamente.  Em geral, o sistema nom incentiva que ũa participante recuse o pagamento doutra.  Basta ũa pouca gente irresponsável ou gamberra para desestabilizar todo o sistema e minar a confiança do resto.
+Um exemplo de abuso seria que o meu cunhado entra no sistema e me paga um milhom de elos.  El fica "arruinado" pero tanto lhe tém porque nom pensava participar de boa fe.  Em princípio, eu podo gastar o meu milhom de elos no que quiger.  Ainda se todas as contas som públicas, pode-se fazer o mesmo menos descaradamente.  Em geral, o sistema nom incentiva que ũa participante recuse o pagamento doutra.  Basta ũa pouca gente irresponsável, malintencionada, ou simplesmente gamberra para desestabilizar todo o sistema e minar a confiança do resto das participantes.
 
 Hai variantes nas que ponhem um límite de creto para paliar esse problema.  Isto introduz a necessidade dum órgao gestor que decida que límites assignar a cada quem.  Mais sobretodo, isso muda fundamentalmente o carácter da moeda, que agora vira escassa, paralisando intercâmbios.  Hai contramedidas para isto último, pero agravam o problema da gestom e introduzem outros (podemos extendermo-nos nisto na assembleia se hai interesse e dá tempo).
 
@@ -66,9 +66,9 @@ Todas as contas e movementos som visíveis para todas as participantes.  Hai vá
 
 - Permite a qualquer participante detectar erros de funcionamento, ou assegurar-se de que todo funciona bem.
 
-- Permite a qualquer participante guardar cópias de segurança de todo o estado.  No pior dos casos, se o sistema deixar de funcionar algum dia, sempre poderiam resolver as contas pendentes manualmente.
+- Permite a qualquer participante guardar cópias de segurança do estado de todas as contas.  No pior dos casos, se o sistema deixar de funcionar algum dia, sempre poderiam resolver as contas pendentes manualmente.
 
-- Alguém tém que ter a possibilidade de ver o estado das contas para resolver problemas que poidam surgir no sistema.  Se nom todo o mundo pode ver todo, a gente que mantenha o sistema teria acesso privilegiado à informaçom, o qual pode gerar suspeitas e drama desnecessário.
+- Alguém tém que ter a possibilidade de ver o estado das contas para diagnosticar e resolver problemas que poidam surgir, por exemplo, por erros de programaçom.  Se nom todo o mundo pode ver todo, a gente que mantenha o sistema teria acesso privilegiado à informaçom, o qual pode gerar suspeitas e drama desnecessário.
 
 - Garantir a privacidade das contas dentro do sistema faria o desenho e programaçom máis complexas.
 
@@ -96,42 +96,46 @@ Isto é beneficioso para Maria e para a comunidade.  Para Maria porque tém mái
 
 ### Comunidades
 
-O sistema de aceitaçom automática tamém facilita abrir contas comunitárias.  Por exemplo, o Foro Ecolóxico de Ribeira poderia abrir ũa conta que aceitasse automáticamente até, digamos, 1000 elos de cada ũa das entidades membro.  Os elos do Foro inspirariam máis confiança que os da maioria das agricultoras e artesãs individuais, e portanto aceitaria-os automáticamente máis gente.  Logo as produtoras e artesãs poderiam pagar cos seus elos próprios em máis lugares (porque os do Foro funcionariam como intermediários, igual que os da Maria no último exemplo).
+O sistema de aceitaçom automática tamém facilita abrir contas comunitárias.  Por exemplo, o Foro Ecolóxico de Ribeira poderia abrir ũa conta que aceitasse automáticamente até, digamos, 1000 elos de cada ũa das entidades membro.  Os elos do Foro inspirariam máis confiança que os da maioria das agricultoras e artesãs individuais, e portanto aceitaria-os automáticamente máis gente-- mesmo gente sem interesse directo em comprar produtos do Foro pode aceitar essa moeda porque sabe que hai moita outra gente que a aceita.  Logo as produtoras e artesãs poderiam pagar cos seus elos próprios em máis lugares (porque os do Foro funcionariam como intermediários, igual que os da Maria no último exemplo).
 
-Além disso, o Foro pode empregar a confiança que vaia ganhando para aumentar a sua capacidade de endevedar-se para acometer projectos de investimento.  Por exemplo, hai um projecto para criar vacas de raças autóctones, em acordo com comunidades de montes locais, mais fai falta acometer trabalhos de acondicionamento e valado.  O Foro pode pagar parte desse trabalho em elos-do-Foro, que num futuro se irám extinguindo em pagamento por carne ecológica, coiro para artesanias, etc.
+Além disso, o Foro pode empregar a confiança que vaia ganhando para aumentar a sua capacidade de endevedar-se para acometer projectos de investimento.  Por exemplo, hai um projecto para criar vacas de raças autóctones, em acordo com comunidades de montes locais, mais fai falta acometer trabalhos de acondicionamento e valado.  O Foro pode pagar parte desse trabalho em elos-do-Foro, que num futuro se irám extinguindo bem em doaçons, bem em pagamento por carne ecológica, coiro para artesanias, etc.
 
 É claro que para isso o Foro tém que convencer às outras participantes no mercadelo de que o projecto fai sentido e de que as participantes no Foro respondem pola moeda emitida e polos riscos do projecto.
 
-Nom todo se poderá pagar com elos, pero no que se puider, é ũa possibilidade interessante para financiar-se sem juros.
+Nom todo se poderá pagar com elos, mais no que se puider, é ũa possibilidade interessante para financiar projectos sem juros.
 
 ### Centrais de compras (em euros)
 
-Hai gente que tém emprego remunerado em euros e que nom tém tempo ou gana de produzir nada fóra do horário laboral para oferecer no mercado, pero que por afinidade ou simpatia quererá colaborar.  Um jeito de fazê-lo seria comprando elos do Foro Ecolóxico com euros.  Esses elos seriam gastados no mercadelo normalmente.
+Hai gente que tém emprego remunerado em euros e que nom tém tempo ou gana de produzir nada fóra do horário laboral para oferecer no mercadelo, pero que por afinidade ou simpatia quererá colaborar.  Um jeito de fazê-lo seria comprando elos do Foro Ecolóxico (ou de outro colectivo) com euros.  Esses elos seriam gastados no mercadelo normalmente.
 
-Ũa variante disto seria pôr postos nas feiras que trocassem euros por bilhetes ou moedas de elos-do-Foro.
-
-Num ou no outro caso, o Foro poderia empregar esses quartos para cubrir gastos das participantes que tenham necessariamente que ser pagos em euros, priorizando polos critérios que decididir a assembleia.  A assembleia pode tamém escolher proveedoras conforme a critérios éticos, usar a agregaçom da demanda para negociar melhores preços, ou que aceitem parte do pagamento em elos-do-Foro.  Outra opçom é, de novo, investí-los em projectos como o descrito acima.
+O Foro poderia empregar esses quartos para cubrir gastos das participantes que tenham necessariamente que ser pagos em euros, priorizando polos critérios que decididir a assembleia.  A assembleia pode tamém escolher proveedoras conforme aos seus critérios éticos, usar a agregaçom da demanda para negociar melhores preços, ou para que aceitem parte do pagamento em elos-do-Foro.  Outra opçom é, de novo, investí-los em projectos como o descrito acima.
 
 ### Outras cousas
 
 O que segue seguramente nom seja necessário para compreender o sistema, mais responde a perguntas que tenho ouvido sobre ela.
 
-### Mais isto é moi complicado!
+#### Mais isto é moi complicado!
 
-Hai sistemas máis simples de moeda social.  Acho que esses sistemas podem ser emulados como um caso especial dentro do mercadelo.
+Hai sistemas máis simples de moeda social.  Acho que esses sistemas podem ser emulados como um caso especial dentro do mercadelo, e que isto tém vantages sobre criar um sistema simples mais isolado.
 
-Por exemplo, se o Foro imprime elos-do-Foro em forma física, usar esses bilhetes nom é máis complicado do que usar bilhetes de euros.  Assemade, quem nom se quiger romper a cabeça com tanta moeda pode operar só cos elos-do-Foro, nunca gastando os seus nem aceitando outros, e entom o sistema nom é máis complicado que usar do que qualquer moeda social.
+Por exemplo, se o Foro imprime elos-do-Foro em forma física, usar esses bilhetes nom é máis complicado do que usar bilhetes de euros.  As produtoras que recibam esses bilhetes e moedas levam-nas ao Foro para que lhas registe no mercadelo.  O foro pode entom pôr esses bilhetes a circular de novo.
 
-É claro que usar os elos assi nom tém todas as vantages do mercadelo, mais mesmo essa gente se benefícia indirectamente da maior aceitaçom que os elos-do-Foro obtenhem porque outra gente os poida trocar por serviços oferecidos por outras pessoas e comunidades.
+Assemade, quem nom se quiger romper a cabeça com tanta moeda pode operar só cos elos-do-Foro, nunca gastando os seus nem aceitando outros, e entom o sistema nom é máis complicado de usar do que qualquer moeda social.
 
-### Unidade de Valor (revisitada)
+É claro que usar os elos assi nom tém todas as vantages do mercadelo.  Todavia, a gente que usar as versons simplificadas da moeda benefícia-se indirectamente da maior aceitaçom que os elos-do-Foro obtenhem polo feito de que outra gente os poida usar para pagar serviços oferecidos por outras pessoas e comunidades.
 
-Se Maria confia no Fabiám, pero menos que no Joám, Maria pode aceitar automáticamente só 50 elos do Fabiám.  O que nom pode é aceitar elos do Fabiám a outro preço.  Agora sabemos porque.  O sistema pode trocar em qualquer momento qualquer moeda que Maria aceite por qualquer outra ou pola sua própria, para completar ũa cadea de pagamento de múltiplos passos.  Isso só fai sentido se todas as moedas valem o mesmo.
+#### Unidade de Valor (revisitada)
 
-Além da agilidade que permite isto, isto tamém dificulta e desincentiva que a gente especule co valor de diferentes moedas ou que lhe dea diferentes valores.
+Se Maria confia no Fabiám, pero menos que no Joám, Maria pode aceitar automáticamente só 50 elos do Fabiám.  O que nom pode é aceitar elos do Fabiám a outro preço.  Tenhem-me comentado isto como ũa desvantage do sistema: que nom permite "expressar" esse tipo de preferências.  E é certo.  Mais se as moedas nom valessem o mesmo o sistema nom poderia resolver cadeas de pagamentos.  E acho que essa capacidade é moito máis importante que a de poder pôr um preço subjectivo à moeda doutra participante.  De feito, isto último serve de pouco e ameaça promover a especulaçom com moedas.
+
+##### Mais como fazer que a gente respeite a unidade de valor?
+
+Acho que o feito que o sistema poda intercambiar qualquer moeda que aceites por qualquer outra desincentiva unidades de valor diferentes à que fixemos como comunidade, fazendo-as pouco prácticas.
 
 Imagina que o Joaquim vai de guai e di que os seus elos valem 10 euros em vez de 1.  Ti nom quererias _ter_ elos-do-Joaquim porque che costárom dez vezes máis e em qualquer momento o sistema pode-chos trocar por elos próprios ou por qualquer outros elos que aceites.
 
 Imagina que o Fabiám di que os seus elos valem 10 céntimos.  Ti nom quererias _aceitar automáticamente_ esses elos, porque o sistema poderia-chos dar a câmbio de tirar-che outros máis "valiosos".
 
-Portanto, a gente tenderá a evitar moedas que se desviem da convençom de valor.
+### Comentários?
+
+Escreve qualquer comentário ou pergunta a [euccastro@gmail.com](mailto:euccastro@gmail.com).  Especifica se queres que apareça nesta secçom.  Tentarei responder todos os correios, mais só prometo publicar aqui os que sejam construtivos (por críticos que forem).
